@@ -9,6 +9,7 @@ import Modal from '../../components/ui/Modal';
 import Toast from '../../components/ui/Toast';
 import Image from 'next/image';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
+import InstructionModal from '../../components/Assessment/InstructionModal';
 
 export default function AssessmentPage() {
     const router = useRouter();
@@ -35,6 +36,8 @@ export default function AssessmentPage() {
         show: false,
         message: ''
     });
+
+    const [showInstructions, setShowInstructions] = useState(false); // New state for instructions
 
     const isSubmitting = useRef(false);
 
@@ -94,21 +97,10 @@ export default function AssessmentPage() {
                     setSetId(data.setId);
                     setCurrentPage(0);
 
-                    const now = Date.now();
-                    setTimerStartTime(now);
-                    setTimeLeft(45 * 60);
+                    // DO NOT SET TIMER START TIME YET - WAIT FOR INSTRUCTIONS
+                    setShowInstructions(true);
 
-                    // Initialize storage
-                    const initialState = {
-                        userId,
-                        setId: data.setId,
-                        questions: data.questions,
-                        answers: [],
-                        currentPage: 0,
-                        startTime: now,
-                        isCompleted: false
-                    };
-                    localStorage.setItem('disc_assessment_state', JSON.stringify(initialState));
+                    // We don't save to localStorage yet until they click start
                 }
             } catch (error) {
                 console.error("Failed to load questions", error);
@@ -122,7 +114,7 @@ export default function AssessmentPage() {
 
     // Save progress whenever answers or page changes
     useEffect(() => {
-        if (loading || isCompleted || !setId) return;
+        if (loading || isCompleted || !setId || !timerStartTime) return; // Don't save if timer hasn't started
 
         const userId = localStorage.getItem('disc_user_id');
         if (!userId) return;
@@ -138,6 +130,28 @@ export default function AssessmentPage() {
         };
         localStorage.setItem('disc_assessment_state', JSON.stringify(stateToSave));
     }, [answers, setId, questions, currentPage, timerStartTime, loading, isCompleted]);
+
+    const handleStartAssessment = () => {
+        setShowInstructions(false);
+        const now = Date.now();
+        setTimerStartTime(now);
+        setTimeLeft(45 * 60); // Reset timer to full duration just in case
+
+        // Initialize storage immediately
+        const userId = localStorage.getItem('disc_user_id');
+        if (userId) {
+            const initialState = {
+                userId,
+                setId,
+                questions,
+                answers: [],
+                currentPage: 0,
+                startTime: now,
+                isCompleted: false
+            };
+            localStorage.setItem('disc_assessment_state', JSON.stringify(initialState));
+        }
+    };
 
 
     // Prevent back button navigation - COMPLETELY BLOCK IT
@@ -346,6 +360,11 @@ export default function AssessmentPage() {
                 message={modalConfig.message}
             />
 
+            <InstructionModal
+                isOpen={showInstructions}
+                onStart={handleStartAssessment}
+            />
+
             <Toast
                 message={toastConfig.message}
                 isVisible={toastConfig.show}
@@ -419,8 +438,7 @@ export default function AssessmentPage() {
                                             <span>⚠️</span> {skippedCount} Skipped
                                         </span>
                                     );
-                                } else if (completedCount > 0) {
-                                    // Only show "All Complete" if there are actually completed questions
+                                } else if (questions.length > 0 && completedCount === questions.length) {
                                     return (
                                         <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold border border-green-200">
                                             <span>✓</span> All Complete

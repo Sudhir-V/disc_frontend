@@ -55,13 +55,13 @@ export default function UserReportTable({ users, onExport }) {
     const formatDate = (dateString) => {
         if (!dateString) return '-';
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-IN');
+        return date.toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata' });
     };
 
     const formatTime = (dateString) => {
         if (!dateString) return '-';
         const date = new Date(dateString);
-        return date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+        return date.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
     };
 
     const formatDuration = (seconds) => {

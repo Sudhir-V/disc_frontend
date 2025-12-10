@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://532fca052c7c.ngrok-free.app';
 
 export const api = axios.create({
     baseURL: API_URL,
@@ -69,12 +69,12 @@ export const exportToPDF = async (userId) => {
     const response = await api.get(`/admin/users/export/pdf?userId=${userId}`, {
         responseType: 'blob'
     });
-    return response.data;
+    return new Blob([response.data], { type: 'application/pdf' });
 };
 
 export const exportToXLSX = async (userId) => {
     const response = await api.get(`/admin/users/export/xlsx?userId=${userId}`, {
         responseType: 'blob'
     });
-    return response.data;
+    return new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 };
