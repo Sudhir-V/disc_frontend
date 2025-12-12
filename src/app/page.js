@@ -1,7 +1,20 @@
+'use client';
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function Home() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const userId = localStorage.getItem('disc_user_id');
+    if (userId) {
+      router.push('/dashboard');
+    }
+  }, [router]);
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-8 relative overflow-hidden bg-gradient-to-b from-white via-green-50 to-green-100">
       {/* Logo - Top Left */}
@@ -41,12 +54,13 @@ export default function Home() {
         </Link>
 
         {/* Powered by Watermark */}
-        <div className="mt-8 flex items-center gap-2 opacity-70 hover:opacity-100 transition-opacity">
-          <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-medium mt-1">Powered by</span>
-          <div className="flex items-center gap-1">
-            <img src="/wele-logo.png" alt="WeLe Logo" className="w-6 h-6 object-contain" />
-            <span className="text-xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-green-500 via-emerald-400 to-green-500 animate-pulse tracking-tight neon-text" style={{ fontFamily: "'Metropolis Extra Bold', 'Metropolis', sans-serif", fontWeight: 800 }}>WeLe</span>
-          </div>
+        <div className="mt-8 flex flex-col items-center opacity-90 hover:opacity-100 transition-opacity">
+          <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-medium mb-0.5">Powered by</span>
+          <img
+            src="/powered-by.png"
+            alt="Powered By Logo"
+            className="h-5 object-contain animate-pulse"
+          />
         </div>
       </div>
     </main>

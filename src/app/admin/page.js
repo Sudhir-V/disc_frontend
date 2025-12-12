@@ -151,12 +151,13 @@ export default function AdminDashboard() {
 
                         {/* RIGHT: Powered By Watermark */}
                         <div className="flex justify-end pr-4">
-                            <div className="flex flex-col items-center opacity-70 hover:opacity-100 transition-opacity">
-                                <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-medium">Powered by</span>
-                                <div className="flex items-center gap-1">
-                                    <img src="/wele-logo.png" alt="WeLe Logo" className="w-5 h-5 object-contain" />
-                                    <span className="text-lg font-black italic text-transparent bg-clip-text bg-gradient-to-r from-green-500 via-emerald-400 to-green-500 animate-pulse tracking-tight neon-text" style={{ fontFamily: "'Metropolis Extra Bold', 'Metropolis', sans-serif", fontWeight: 800 }}>WeLe</span>
-                                </div>
+                            <div className="flex flex-col items-center opacity-90 hover:opacity-100 transition-opacity">
+                                <span className="text-[10px] uppercase tracking-wider text-zinc-400 font-medium mb-0.5">Powered by</span>
+                                <img
+                                    src="/powered-by.png"
+                                    alt="Powered By Logo"
+                                    className="h-5 object-contain animate-pulse"
+                                />
                             </div>
                         </div>
                     </div>
