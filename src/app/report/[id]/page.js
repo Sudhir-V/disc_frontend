@@ -19,7 +19,8 @@ export default function ReportPage({ params }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [downloading, setDownloading] = useState(false);
-    const reportRef = useRef(null);
+    const page1Ref = useRef(null);
+    const page2Ref = useRef(null);
     const router = useRouter();
 
     // DISC Traits with colors and full names
@@ -64,16 +65,13 @@ export default function ReportPage({ params }) {
     };
 
     const handleDownloadPDF = async () => {
-        if (!reportRef.current) return;
+        if (!page1Ref.current || !page2Ref.current) return;
         setDownloading(true);
         try {
             // Wait for images and charts to fully render
             await new Promise(resolve => setTimeout(resolve, 1000));
 
-            const element = reportRef.current;
-
-            // Generate canvas using html-to-image (more reliable than toPng)
-            const canvas = await toCanvas(element, {
+            const captureOptions = {
                 quality: 1,
                 pixelRatio: 2,
                 backgroundColor: '#ffffff',
@@ -84,33 +82,28 @@ export default function ReportPage({ params }) {
                     maxWidth: 'none',
                     width: '100%'
                 }
-            });
+            };
 
-            // Convert canvas to data URL
-            const imgData = canvas.toDataURL('image/png', 1.0);
+            // Capture Page 1
+            const canvas1 = await toCanvas(page1Ref.current, captureOptions);
+            const imgData1 = canvas1.toDataURL('image/png', 1.0);
 
-            const pdf = new jsPDF('p', 'mm', 'a4');
+            // Capture Page 2
+            const canvas2 = await toCanvas(page2Ref.current, captureOptions);
+            const imgData2 = canvas2.toDataURL('image/png', 1.0);
+
+            const pdf = new jsPDF('p', 'mm', [210, 340]);
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = pdf.internal.pageSize.getHeight();
 
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = pdfWidth / (imgWidth / 2); // Divide by 2 due to pixelRatio
-            const totalHeight = (imgHeight / 2) * ratio;
+            // Page 1
+            const imgHeight1 = canvas1.height * (pdfWidth / canvas1.width);
+            pdf.addImage(imgData1, 'PNG', 0, 0, pdfWidth, imgHeight1);
 
-            // Handle multi-page PDF if report is long
-            let heightLeft = totalHeight;
-            let position = 0;
-
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, totalHeight);
-            heightLeft -= pdfHeight;
-
-            while (heightLeft > 0) {
-                position = heightLeft - totalHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, totalHeight);
-                heightLeft -= pdfHeight;
-            }
+            // Page 2
+            pdf.addPage();
+            const imgHeight2 = canvas2.height * (pdfWidth / canvas2.width);
+            pdf.addImage(imgData2, 'PNG', 0, 0, pdfWidth, imgHeight2);
 
             pdf.save(`DISC_Report_${userProfile?.name || 'User'}.pdf`);
         } catch (err) {
@@ -189,10 +182,10 @@ export default function ReportPage({ params }) {
                 </button>
             </div>
 
-            {/* Configured for PDF Capture */}
-            <div ref={reportRef} className="max-w-4xl mx-auto shadow-2xl overflow-hidden print-container relative" style={{ backgroundColor: '#ffffff' }}>
+            {/* --- PAGE 1 --- */}
+            <div ref={page1Ref} className="max-w-4xl mx-auto shadow-2xl overflow-hidden print-container relative mb-8" style={{ backgroundColor: '#ffffff' }}>
 
-                {/* Watermark - Moved to Top Right as requested */}
+                {/* Watermark */}
                 <div className="absolute top-6 right-8 z-20 flex flex-col items-end opacity-90">
                     <span className="text-[10px] uppercase tracking-wider text-green-800/60 font-medium mb-0.5">Powered by</span>
                     <img
@@ -211,7 +204,6 @@ export default function ReportPage({ params }) {
                             <p className="mt-1 font-medium" style={{ color: '#15803d' }}>Detailed Behavioral Analysis</p>
                         </div>
                         <div className="text-right mt-12 md:mt-12">
-                            {/* Margin top added for mobile/watermark clearance if needed, though watermark is absolute */}
                             <h2 className="text-xl font-bold" style={{ color: '#14532d' }}>{userProfile?.name || 'User Name'}</h2>
                             <p className="text-sm" style={{ color: '#166534' }}>{userProfile?.email}</p>
                             <p className="text-xs mt-2 font-medium" style={{ color: '#15803d' }}>
@@ -226,7 +218,7 @@ export default function ReportPage({ params }) {
 
                 <div className="p-6 md:p-8 space-y-6">
 
-                    {/* 2. ABOUT DISC Section (New) */}
+                    {/* 2. ABOUT DISC Section */}
                     <section className="bg-white rounded-2xl p-5 border border-zinc-100 shadow-sm">
                         <h3 className="text-xl font-bold mb-3" style={{ color: '#166534' }}>About DISC</h3>
                         <div className="prose text-sm text-zinc-600 max-w-none space-y-3">
@@ -322,6 +314,15 @@ export default function ReportPage({ params }) {
                             ))}
                         </div>
                     </section>
+                </div>
+            </div>
+
+            {/* --- PAGE 2 --- */}
+            <div ref={page2Ref} className="max-w-4xl mx-auto shadow-2xl overflow-hidden print-container relative" style={{ backgroundColor: '#ffffff' }}>
+
+
+                <div className="p-8 space-y-6 mt-8">
+
 
                     {/* 2-Column Grid for Remaining Sections (Compact Layout) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
