@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAllUsersReport, exportToPDF, exportToXLSX } from '../../services/api';
 import UserReportTable from '../../components/Admin/UserReportTable';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import Image from 'next/image';
 
 export default function AdminDashboard() {
@@ -90,9 +91,9 @@ export default function AdminDashboard() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white via-green-50 to-green-100">
-                <div className="animate-pulse flex flex-col items-center">
-                    <div className="h-12 w-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-green-600 font-mono">Loading Admin Dashboard...</p>
+                <div className="flex flex-col items-center">
+                    <LoadingSpinner size="lg" color="green" />
+                    <p className="mt-4 text-green-600 font-mono animate-pulse">Loading Admin Dashboard...</p>
                 </div>
             </div>
         );

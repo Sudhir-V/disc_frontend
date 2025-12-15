@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getResult } from '../../services/api';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -66,7 +67,16 @@ export default function ResultsPage() {
         }
     }, []);
 
-    if (loading) return <div className="min-h-screen flex items-center justify-center bg-white text-green-600">Analysis in progress...</div>;
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="flex flex-col items-center">
+                    <LoadingSpinner size="lg" color="green" />
+                    <p className="mt-4 text-green-600 font-mono animate-pulse">Analysis in progress...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!result) return <div className="min-h-screen flex items-center justify-center bg-white text-red-600">No results found.</div>;
 

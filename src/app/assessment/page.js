@@ -10,6 +10,7 @@ import Toast from '../../components/ui/Toast';
 import Image from 'next/image';
 import { ThumbsUp, ThumbsDown } from 'lucide-react';
 import InstructionModal from '../../components/Assessment/InstructionModal';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import Confetti from 'react-confetti';
 import { motion } from 'framer-motion';
 
@@ -365,9 +366,9 @@ export default function AssessmentPage() {
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-white">
-                <div className="animate-pulse flex flex-col items-center">
-                    <div className="h-12 w-12 border-4 border-green-500 border-t-transparent rounded-full animate-spin mb-4"></div>
-                    <p className="text-green-600 font-mono">
+                <div className="flex flex-col items-center">
+                    <LoadingSpinner size="lg" color="green" />
+                    <p className="mt-4 text-green-600 font-mono animate-pulse">
                         {isCompleted ? 'Calculating Results...' : 'Loading Assessment...'}
                     </p>
                 </div>

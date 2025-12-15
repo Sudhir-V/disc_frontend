@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { sendOtp, verifyOtp, retryOtp } from '../../services/api';
 import Modal from '../../components/ui/Modal';
+import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import { Phone, KeyRound, ArrowRight } from 'lucide-react';
 import Image from 'next/image';
 
@@ -217,8 +218,17 @@ export default function LoginPage() {
                                 disabled={loading || phone.length < 10}
                                 className="w-full bg-zinc-900 text-white font-bold text-lg py-4 rounded-xl hover:scale-[1.02] transition-all disabled:opacity-70 disabled:hover:scale-100 shadow-lg flex items-center justify-center gap-2 group hover:shadow-xl hover:bg-black"
                             >
-                                {loading ? 'Sending...' : 'Get OTP'}
-                                {!loading && <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />}
+                                {loading ? (
+                                    <div className="flex items-center gap-2">
+                                        <LoadingSpinner size="sm" color="white" />
+                                        <span>Sending...</span>
+                                    </div>
+                                ) : (
+                                    <>
+                                        Get OTP
+                                        <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+                                    </>
+                                )}
                             </button>
                         </form>
                     ) : (
@@ -279,7 +289,14 @@ export default function LoginPage() {
                                 disabled={loading || otp.join('').length < 4}
                                 className="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold text-lg py-4 rounded-xl hover:scale-[1.02] transition-transform disabled:opacity-70 disabled:hover:scale-100 shadow-lg hover:shadow-green-200"
                             >
-                                {loading ? 'Verifying...' : 'Verify & Login'}
+                                {loading ? (
+                                    <div className="flex items-center justify-center gap-2">
+                                        <LoadingSpinner size="sm" color="white" />
+                                        <span>Verifying...</span>
+                                    </div>
+                                ) : (
+                                    'Verify & Login'
+                                )}
                             </button>
 
                             <div className="text-center">
