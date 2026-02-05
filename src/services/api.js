@@ -9,6 +9,17 @@ export const api = axios.create({
     },
 });
 
+// Add interceptor to include token
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('disc_auth_token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
 export const startAssessment = async (userId) => {
     const response = await api.get(`/assessment/start/${userId}`);
     return response.data;
@@ -39,18 +50,8 @@ export const checkAssessmentStatus = async (userId) => {
     return response.data;
 };
 
-export const sendOtp = async (phone) => {
-    const response = await api.post('/auth/send-otp', { phone });
-    return response.data;
-};
-
-export const verifyOtp = async (phone, otp) => {
-    const response = await api.post('/auth/verify-otp', { phone, otp });
-    return response.data;
-};
-
-export const retryOtp = async (phone) => {
-    const response = await api.post('/auth/retry-otp', { phone });
+export const login = async (identifier) => {
+    const response = await api.post('/auth/login', { identifier });
     return response.data;
 };
 

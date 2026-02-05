@@ -361,7 +361,7 @@ export default function UserReportTable({ users, onExport }) {
                             ) : (
                                 filteredUsers.map((user) => (
                                     <tr key={user._id} className="hover:bg-zinc-50 transition-colors">
-                                        <td className="px-4 py-3 text-sm font-medium text-zinc-900">
+                                        <td className="px-4 py-3 text-sm font-medium text-zinc-900 whitespace-nowrap">
                                             {user.name}
                                             {user.isAdmin && (
                                                 <span className="ml-2 px-2 py-0.5 text-xs bg-purple-100 text-purple-700 rounded-full">Admin</span>
