@@ -206,6 +206,7 @@ export default function ReportPage({ params }) {
                         <div className="text-right mt-12 md:mt-12">
                             <h2 className="text-xl font-bold" style={{ color: '#14532d' }}>{userProfile?.name || 'User Name'}</h2>
                             <p className="text-sm" style={{ color: '#166534' }}>{userProfile?.email}</p>
+                            <p className="text-sm font-medium" style={{ color: '#166534' }}>ID: {userProfile?.employeeId || 'N/A'}</p>
                             <p className="text-xs mt-2 font-medium" style={{ color: '#15803d' }}>
                                 Assessment Submitted: {userData.completedAt || userData.createdAt ? new Date(userData.completedAt || userData.createdAt).toLocaleDateString() : 'N/A'}
                             </p>

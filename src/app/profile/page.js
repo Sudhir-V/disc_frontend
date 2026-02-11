@@ -14,7 +14,8 @@ export default function ProfilePage() {
         name: '',
         email: '',
         gender: '',
-        phone: ''
+        phone: '',
+        employeeId: ''
     });
 
     useEffect(() => {
@@ -34,7 +35,8 @@ export default function ProfilePage() {
                     name: userData.name || 'Not provided',
                     phone: userData.phone || 'Not provided',
                     email: userData.email || 'Not provided',
-                    gender: userData.gender || 'Not provided'
+                    gender: userData.gender || 'Not provided',
+                    employeeId: userData.employeeId || 'Not provided'
                 });
             } catch (error) {
                 console.error('Failed to fetch profile:', error);
@@ -132,6 +134,19 @@ export default function ProfilePage() {
                     </h1>
 
                     <div className="space-y-6">
+                        {/* Employee ID */}
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-zinc-600 ml-1">Employee ID</label>
+                            <div className="relative">
+                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400">
+                                    <User size={18} />
+                                </span>
+                                <div className="w-full bg-white border border-zinc-200 rounded-xl px-12 py-3 text-zinc-800 shadow-sm">
+                                    {profileData.employeeId}
+                                </div>
+                            </div>
+                        </div>
+
                         {/* Phone */}
                         <div className="space-y-2">
                             <label className="text-sm font-medium text-zinc-600 ml-1">Mobile Number</label>

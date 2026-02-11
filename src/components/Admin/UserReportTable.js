@@ -322,6 +322,9 @@ export default function UserReportTable({ users, onExport }) {
                     <table className="w-full">
                         <thead className="bg-zinc-50 border-b border-zinc-200">
                             <tr>
+                                <th className="px-4 py-3 text-left text-xs font-bold text-zinc-600 uppercase tracking-wider cursor-pointer hover:bg-zinc-100" onClick={() => handleSort('employeeId')}>
+                                    Emp ID {sortField === 'employeeId' && (sortOrder === 'asc' ? '↑' : '↓')}
+                                </th>
                                 <th className="px-4 py-3 text-left text-xs font-bold text-zinc-600 uppercase tracking-wider cursor-pointer hover:bg-zinc-100" onClick={() => handleSort('name')}>
                                     Name {sortField === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
                                 </th>
@@ -361,6 +364,9 @@ export default function UserReportTable({ users, onExport }) {
                             ) : (
                                 filteredUsers.map((user) => (
                                     <tr key={user._id} className="hover:bg-zinc-50 transition-colors">
+                                        <td className="px-4 py-3 text-sm font-medium text-zinc-900 whitespace-nowrap">
+                                            {user.employeeId || '-'}
+                                        </td>
                                         <td className="px-4 py-3 text-sm font-medium text-zinc-900 whitespace-nowrap">
                                             {user.name}
                                             {user.isAdmin && (

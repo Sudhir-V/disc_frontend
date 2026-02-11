@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { sendOtp, verifyOtp, retryOtp } from '../../services/api';
 import Modal from '../../components/ui/Modal';
 import LoadingSpinner from '../../components/ui/LoadingSpinner';
-import { Phone, KeyRound, ArrowRight } from 'lucide-react';
+import { Phone, KeyRound, ArrowRight, ArrowLeft } from 'lucide-react';
 import Image from 'next/image';
 
 export default function LoginPage() {
@@ -160,6 +160,17 @@ export default function LoginPage() {
                     className="object-contain"
                     priority
                 />
+            </div>
+
+            {/* Top Right - Back Button */}
+            <div className="absolute top-8 right-8 z-20">
+                <button
+                    onClick={() => router.push('/')}
+                    className="flex items-center gap-2 px-4 py-2 bg-white/80 hover:bg-zinc-50 text-zinc-600 hover:text-zinc-900 border border-zinc-200 hover:border-green-300 rounded-full transition-all backdrop-blur-sm shadow-sm"
+                >
+                    <ArrowLeft size={18} />
+                    <span className="font-medium text-sm">Back</span>
+                </button>
             </div>
 
             {/* Background Ambience */}
