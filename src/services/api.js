@@ -9,6 +9,17 @@ export const api = axios.create({
     },
 });
 
+// Add interceptor to include token
+api.interceptors.request.use((config) => {
+    const token = localStorage.getItem('disc_auth_token');
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+}, (error) => {
+    return Promise.reject(error);
+});
+
 export const startAssessment = async (userId) => {
     const response = await api.get(`/assessment/start/${userId}`);
     return response.data;

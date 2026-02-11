@@ -109,6 +109,9 @@ export default function LoginPage() {
                 localStorage.setItem('disc_user_id', data.user._id);
                 localStorage.setItem('disc_user_phone', data.user.phone);
                 localStorage.setItem('disc_user_name', data.user.name || '');
+                if (data.token) {
+                    localStorage.setItem('disc_auth_token', data.token);
+                }
                 router.push('/dashboard');
             }
         } catch (error) {
@@ -152,8 +155,8 @@ export default function LoginPage() {
                 <Image
                     src="/logo-new.png"
                     alt="Inqisity Logo"
-                    width={200}
-                    height={60}
+                    width={120}
+                    height={36}
                     className="object-contain"
                     priority
                 />

@@ -86,11 +86,11 @@ export default function ReportPage({ params }) {
 
             // Capture Page 1
             const canvas1 = await toCanvas(page1Ref.current, captureOptions);
-            const imgData1 = canvas1.toDataURL('image/png', 1.0);
+            const imgData1 = canvas1.toDataURL('image/jpeg', 0.8);
 
             // Capture Page 2
             const canvas2 = await toCanvas(page2Ref.current, captureOptions);
-            const imgData2 = canvas2.toDataURL('image/png', 1.0);
+            const imgData2 = canvas2.toDataURL('image/jpeg', 0.8);
 
             const pdf = new jsPDF('p', 'mm', [210, 340]);
             const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -98,12 +98,12 @@ export default function ReportPage({ params }) {
 
             // Page 1
             const imgHeight1 = canvas1.height * (pdfWidth / canvas1.width);
-            pdf.addImage(imgData1, 'PNG', 0, 0, pdfWidth, imgHeight1);
+            pdf.addImage(imgData1, 'JPEG', 0, 0, pdfWidth, imgHeight1);
 
             // Page 2
             pdf.addPage();
             const imgHeight2 = canvas2.height * (pdfWidth / canvas2.width);
-            pdf.addImage(imgData2, 'PNG', 0, 0, pdfWidth, imgHeight2);
+            pdf.addImage(imgData2, 'JPEG', 0, 0, pdfWidth, imgHeight2);
 
             pdf.save(`DISC_Report_${userProfile?.name || 'User'}.pdf`);
         } catch (err) {

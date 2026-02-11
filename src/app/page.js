@@ -22,8 +22,8 @@ export default function Home() {
         <Image
           src="/logo-new.png"
           alt="Inqisity Logo"
-          width={200}
-          height={60}
+          width={120}
+          height={36}
           className="object-contain" // Original colors
           priority
         />
