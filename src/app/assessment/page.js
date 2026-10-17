@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { startAssessment, submitAssessment } from '../../services/api';
+import { startAssessment, submitAssessment, getResult } from '../../services/api';
 import QuestionCard from '../../components/Assessment/QuestionCard';
 import ProgressBar from '../../components/Assessment/ProgressBar';
 import Modal from '../../components/ui/Modal';
@@ -14,7 +14,55 @@ import LoadingSpinner from '../../components/ui/LoadingSpinner';
 import Confetti from 'react-confetti';
 import { motion } from 'framer-motion';
 
+// ─── Send result email via n8n AI agent ──────────────────────────────────────
+const N8N_WEBHOOK_URL = 'https://arunpandian1997.app.n8n.cloud/webhook/chat';
+
+async function sendResultEmail(userId, resultData) {
+    try {
+        const userName  = localStorage.getItem('disc_user_name')  || 'User';
+        const userEmail = localStorage.getItem('disc_user_email') || '';
+        const userPhone = localStorage.getItem('disc_user_phone') || '';
+
+        if (!userEmail) {
+            console.warn('No user email in localStorage — skipping result email.');
+            return;
+        }
+
+        const payloadData = JSON.stringify({
+            trigger: 'assessment_complete',
+            format: 'html',
+            instruction: 'CRITICAL: Generate the email body in FULL RESPONSIVE HTML WITH INLINE CSS and visual progress bars. Do NOT use plain text or markdown tables. Pass valid HTML to the Gmail send tool.',
+            user:   { name: userName, email: userEmail, phone: userPhone },
+            result: {
+                highestTrait:   resultData?.highestTrait   || '',
+                secondaryTrait: resultData?.secondaryTrait || '',
+                percentages:    resultData?.percentages    || {},
+                timeTaken:      resultData?.timeTaken      || 0,
+            },
+        });
+
+        const payload = {
+            message:   payloadData,
+            chatInput: payloadData,
+            sessionId: `result_email_${userId}_${Date.now()}`,
+        };
+
+        await fetch(N8N_WEBHOOK_URL, {
+            method:  'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body:    JSON.stringify(payload),
+        });
+
+        console.log('✅ Result email trigger sent to n8n');
+    } catch (err) {
+        // Fire-and-forget — never block the success screen
+        console.error('Failed to send result email via n8n:', err);
+    }
+}
+// ─────────────────────────────────────────────────────────────────────────────
+
 export default function AssessmentPage() {
+
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const [questions, setQuestions] = useState([]);
@@ -351,6 +399,15 @@ export default function AssessmentPage() {
             setIsCompleted(true);
             setShowSuccess(true); // Trigger success screen
             setLoading(false); // Enable rendering of success screen
+
+            // 📧 Fire-and-forget: fetch result and trigger email via n8n
+            try {
+                const resultData = await getResult(userId);
+                sendResultEmail(userId, resultData); // non-blocking
+            } catch (e) {
+                console.warn('Could not fetch result for email trigger:', e.message);
+            }
+
         } catch (error) {
             console.error("Failed to submit", error);
             setModalConfig({

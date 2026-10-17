@@ -109,6 +109,7 @@ export default function LoginPage() {
                 localStorage.setItem('disc_user_id', data.user._id);
                 localStorage.setItem('disc_user_phone', data.user.phone);
                 localStorage.setItem('disc_user_name', data.user.name || '');
+                localStorage.setItem('disc_user_email', data.user.email || '');
                 if (data.token) {
                     localStorage.setItem('disc_auth_token', data.token);
                 }
@@ -149,7 +150,7 @@ export default function LoginPage() {
     };
 
     return (
-        <main className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-white via-green-50 to-green-100 relative overflow-hidden text-zinc-900">
+        <main suppressHydrationWarning className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-white via-green-50 to-green-100 relative overflow-hidden text-zinc-900">
             {/* Logo - Top Left */}
             <div className="absolute top-8 left-8 z-20">
                 <Image
